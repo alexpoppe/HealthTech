@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+   <link rel= "stylesheet" type= "text/css" href= "{{ url_for('api.static', filename='main.css') }}">
+
+
+   <head>
+    <meta charset="UTF-8">
+    <title>Simple Recorder.js demo with record, stop and pause - addpipe.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+
+
+   <body>
+      
+      {% if answer %}
+      <h3 class="title">3. Answer</h3>
+         <div>
+            <textarea name="answer" class="source" disabled>{{answer}}</textarea>
+         </div>
+      {% endif %}
+
+    <div id="controls">
+        <button id="recordButton">Record</button>
+        <button id="pauseButton" disabled>Pause</button>
+        <button id="stopButton" disabled>Stop</button>
+    </div>
+    <div id="formats">Format: start recording to see sample rate</div>
+    <p><strong>Recordings:</strong></p>
+    <ol id="recordingsList"></ol>
+   
+       
+
+   </body>
+   
+   <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
+   <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+   <script src="{{ url_for('api.static', filename='app.js')}}"></script>
+   <script src="{{ url_for('api.static', filename='main.js')}}"></script>
+
+</htlm>
