@@ -8,7 +8,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     with app.app_context():
-        from api.api import api
+        from api.app import api
         app.register_blueprint(api, url_prefix="/api", template_folder='templates', static_folder='static')
         
         @app.after_request

@@ -50,7 +50,9 @@
     const msgerForm = get(".msger-inputarea");
     const msgerInput = get(".msger-input");
     const msgerChat = get(".msger-chat");
-
+    localStorage.questions = ""
+    localStorage.answers = ""
+    
 
     // Icons made by Freepik from www.flaticon.com
     const BOT_IMG = "https://image.flaticon.com/icons/svg/327/327779.svg";
@@ -64,6 +66,8 @@
       const msgText = msgerInput.value;
       if (!msgText) return;
 
+      localStorage.questions = localStorage.questions + msgText + " | "
+      console.log(localStorage.questions)
       appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText);
       msgerInput.value = "";
       botResponse(msgText);
@@ -71,6 +75,7 @@
 
     function appendMessage(name, img, side, text) {
       //   Simple solution for small apps
+
       const msgHTML = `
 <div class="msg ${side}-msg">
   <div class="msg-img" style="background-image: url(${img})"></div>
@@ -93,12 +98,13 @@
     function botResponse(rawText) {
 
       // Bot Response
-      $.get("/get", { msg: rawText }).done(function (data) {
+      $.get("/api/response", { msg: rawText , questions: localStorage.questions, answers: localStorage.answers}).done(function (data) {
         console.log(rawText);
         console.log(data);
         const msgText = data;
         appendMessage(BOT_NAME, BOT_IMG, "left", msgText);
-
+        localStorage.answers = localStorage.answers + data + " | "
+        console.log(localStorage.answers)
       });
 
     }
