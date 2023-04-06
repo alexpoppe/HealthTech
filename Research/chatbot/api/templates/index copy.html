@@ -22,7 +22,7 @@
 
     <main class="msger-chat">
       <div class="msg left-msg">
-        <div class="msg-img"></div>
+        <div class="msg-img" style="background-image: url(../api/static/bot.png)"></div>
 
         <div class="msg-bubble">
           <div class="msg-info">
@@ -37,12 +37,14 @@
       </div>
 
     </main>
+    <audio controls></audio>
 
     <form class="msger-inputarea">
+
       <input type="text" class="msger-input" id="textInput" placeholder="Enter your message...">
       <button type="submit" class="msger-send-btn">Send</button>
-      <button type="submit" class="record"><i class="fa-solid fa-microphone fa-xl"></i></button>
-      <button type="submit" class="stop"><i class="fa-solid fa-microphone fa-xl"></i></button>
+      <button onclick="buttonColor()" type="submit" id="voice-btn" class="voice-btn"><i class="fa-solid fa-microphone fa-xl"></i></button>
+
     </form>
   </section>
   <!-- partial -->
@@ -60,7 +62,7 @@
     
 
     // Icons made by Freepik from www.flaticon.com
-    const BOT_IMG = "../static/bot.png";
+    const BOT_IMG = "https://image.flaticon.com/icons/svg/327/327779.svg";
     const PERSON_IMG = "https://image.flaticon.com/icons/svg/145/145867.svg";
     const BOT_NAME = "    ChatBot";
     const PERSON_NAME = "You";
@@ -83,7 +85,7 @@
 
       const msgHTML = `
 <div class="msg ${side}-msg">
-  <div class="msg-img""></div>
+  <div class="msg-img" style="background-image: url(${img})"></div>
 
   <div class="msg-bubble">
     <div class="msg-info">
@@ -135,101 +137,44 @@
       index = index >= voice_colors.length - 1 ? 0 : index + 1;
     }
 
+
+
   </script>
   <script>
 
-    const record = document.querySelector('.record');
-    const stop = document.querySelector('.stop');
+    let audioIN = { audio: true};
 
-    stop.disabled = true;
+    let voice_toggle = document.getElementById("voice-btn");
+    let rec = false;
+    let mediaRecorder = new MediaRecorder(mediaStreamObj);
 
-    if (navigator.mediaDevices.getUserMedia) {
-      console.log('getUserMedia supported.');
-    
-      const constraints = { audio: true };
-      let chunks = [];
+    navigator.mediaDevices.getUserMedia(audioIN).then(function (mediastreamObj) {
+      let audio = document.queryselecter('audio');
+      if ("srcObject" in audio) {
+        audio.srcObject = mediaStreamObj;
+      } else {
+        audio.src = window.URL.createObjectURL(mediaStreamObj);
+      }
 
-      console.log(constraints);
-      console.log(chunks);
-    
-      let onSuccess = function(stream) {
-        const mediaRecorder = new MediaRecorder(stream);
-    
-    
-        record.onclick = function() {
+      voice_toggle.addEventListener('click', function (ev)) {
+        rec = !rec
+        if (rec) {
+          console.log("start recording");
           mediaRecorder.start();
-          console.log(mediaRecorder.state);
-          console.log("recorder started");
-          record.style.background = "red";
-    
-          stop.disabled = false;
-          record.disabled = true;
-        }
-    
-        stop.onclick = function() {
-          mediaRecorder.stop();
-          console.log(mediaRecorder.state);
-          console.log("recorder stopped");
-          record.style.background = "";
-          record.style.color = "";
-          // mediaRecorder.requestData();
-    
-          stop.disabled = true;
-          record.disabled = false;
-        }
-
-        mediaRecorder.onstop = function(e) {
-          console.log("data available after MediaRecorder.stop() called");
-
-          const blob = new Blob(chunks, {'type': 'audio/mp3'});
-          const myFile = new File([blob], 'audio.mp3', {
-            type: blob.type,
-          });
-
-          var xhr = new XMLHttpRequest();
-          xhr.onload=function(e) {
-            if(this.readyState === 4) {
-                console.log("Server returned: ", e.target.responseText);
-                document.getElementById('textInput').value = e.target.responseText;
-            }
-        };
-          var fd = new FormData();
-          fd.append("audio_data", blob, 'test');
-          xhr.open("POST", "/api/voice", true);
-          xhr.send(fd);
-
-
-
-
-          var a = document.createElement('a');
-          a.download = 'download.mp3';
-          a.href = window.URL.createObjectURL(blob);
-          a.click();
-          console.log(myFile);
+        }else {
+          console.log("stop listening");
+          blob = mediaRecorder.requestData();
           console.log(blob);
-          chunks = [];
-          const audioURL = window.URL.createObjectURL(blob);
-          console.log("recorder stopped");
+          mediaRecorder.stop();
         }
-
-        mediaRecorder.ondataavailable = function(e) {
-          chunks.push(e.data);
-        }
-
       }
 
-      let onError = function(err) {
-        console.log('The following error occured: ' + err);
-      }
-      navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
-    } else {
-      console.log('getUserMedia not supported on your browser!');
-   }
+    })
 
+    
 
 
   </script>
-  
 
 </body>
 

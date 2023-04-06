@@ -8,7 +8,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 @api.route("/", methods=["GET", "POST"])
 def home():
     print(request.files, flush=True)
-    
+
     if request.method == "GET":
         return render_template("index.html", result=None)
     

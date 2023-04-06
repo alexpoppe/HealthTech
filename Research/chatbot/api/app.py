@@ -2,7 +2,8 @@ from flask import Blueprint, request, render_template
 from config import Config
 from qdrant_client import QdrantClient
 import openai
-
+import torch
+import whisper
 
 
 api = Blueprint("api", __name__, template_folder='templates', static_folder='static', static_url_path='api/static')
@@ -13,6 +14,7 @@ def home():
 
 @api.route("/response")
 def response():
+    print(request.args, flush=True)
     query = request.args.get('msg')
     questions = request.args.get('questions')
     answers = request.args.get('answers')
@@ -36,6 +38,21 @@ def response():
         print("messages: ", message, flush=True)
     answer = get_response(query, messages)
     return answer
+
+@api.route("/voice", methods=["POST"])
+def voice():
+    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+    print(request.files, flush=True)
+    f = request.files['audio_data']
+    with open('audio.wav', 'wb') as audio:
+        f.save(audio)
+    
+    model = whisper.load_model("base", device=DEVICE)
+    result = model.transcribe("audio.wav")
+    print('result -->', result["text"], flush=True)
+    
+    return result["text"]
 
 
 def get_response(query: str, messages: list) -> str:
