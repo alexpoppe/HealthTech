@@ -145,6 +145,11 @@
   .msger-send-btn:hover {
     background: rgb(0, 180, 50);
   }
+
+  .voice-btn {
+    color: #000000;
+  }
+
   
   .msger-chat {
     background-color: #fcfcfe;

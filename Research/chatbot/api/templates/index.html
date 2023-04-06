@@ -37,19 +37,31 @@
       </div>
 
     </main>
-
     <form class="msger-inputarea">
+
       <input type="text" class="msger-input" id="textInput" placeholder="Enter your message...">
       <button type="submit" class="msger-send-btn">Send</button>
+      <button onclick="buttonColor()" type="submit" id="voice-btn" class="voice-btn"><i class="fa-solid fa-microphone fa-xl"></i></button>
+
+    </form>
+    <form class="msger-inputarea">
+
+      <input type="text" class="msger-input" id="textInput" placeholder="Enter your message...">
+      <button type="submit" class="msger-send-btn">Send</button>
+      <button onclick="buttonColor()" type="submit" id="voice-btn" class="voice-btn"><i class="fa-solid fa-microphone fa-xl"></i></button>
+
     </form>
   </section>
   <!-- partial -->
   <script src='https://use.fontawesome.com/releases/v5.0.13/js/all.js'></script>
+  <script src="https://kit.fontawesome.com/384afa54f9.js" crossorigin="anonymous"></script>
   <script>
 
     const msgerForm = get(".msger-inputarea");
     const msgerInput = get(".msger-input");
     const msgerChat = get(".msger-chat");
+    const voice_colors = ["black", "red"]
+    let index = 1;
     localStorage.questions = ""
     localStorage.answers = ""
     
@@ -120,6 +132,14 @@
       const m = "0" + date.getMinutes();
 
       return `${h.slice(-2)}:${m.slice(-2)}`;
+    }
+
+    function buttonColor() {
+      console.log(index)
+      console.log(voice_colors)
+      console.log(document.getElementById("voice-btn").style.color)
+      document.getElementById("voice-btn").style.color = voice_colors[index]
+      index = index >= voice_colors.length - 1 ? 0 : index + 1;
     }
 
 
